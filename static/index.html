@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Laboratorio Interactivo de Árboles Binarios (BST / ABB) | Python + JS</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <!-- ENCABEZADO (Parte del 30% Verde Pastel Principal) -->
+    <header class="app-header">
+        <div class="header-brand">
+            <div class="brand-icon">🌳</div>
+            <div>
+                <h1>Laboratorio de Árboles Binarios (BST / ABB)</h1>
+                <p>Simulador visual paso a paso impulsado por Python &amp; JavaScript</p>
+            </div>
+        </div>
+
+        <div class="theme-pills" title="Distribución cromática del diseño">
+            <span class="pill pill-60"><i class="swatch s-60"></i> 60% Menta Suave</span>
+            <span class="pill pill-30"><i class="swatch s-30"></i> 30% Verde Pastel</span>
+            <span class="pill pill-10"><i class="swatch s-10"></i> 10% Acento Activo</span>
+            <span id="backend-status" class="pill pill-status">🐍 Motor Python Activo</span>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="lab-layout">
+        <!-- PANEL IZQUIERDO: CONTROLES (30% Verde Pastel) -->
+        <aside class="control-sidebar">
+            <!-- SECCIÓN 1: INSERTAR NODOS (Regla BST) -->
+            <section class="control-card">
+                <h2>1. Insertar Nodo (Regla ABB)</h2>
+                <p class="card-hint">Menores a la <strong>izquierda (&lt;)</strong>, mayores a la <strong>derecha (&gt;)</strong>.</p>
+                <form id="form-insertar" class="insert-form">
+                    <input
+                        type="number"
+                        id="input-valor"
+                        placeholder="Ej: 12"
+                        min="-999"
+                        max="999"
+                        required
+                    />
+                    <button type="submit" class="btn btn-accent">Insertar Paso a Paso</button>
+                </form>
+                <div class="quick-actions">
+                    <button id="btn-aleatorio" type="button" class="btn btn-secondary">🎲 + Nodo Aleatorio</button>
+                    <button id="btn-ejemplo" type="button" class="btn btn-secondary">📚 Árbol de Clase</button>
+                    <button id="btn-limpiar" type="button" class="btn btn-outline-danger">🗑️ Vaciar Árbol</button>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: RECORRIDOS PASO A PASO -->
+            <section class="control-card">
+                <h2>2. Recorridos del Árbol</h2>
+                <p class="card-hint">Selecciona un algoritmo para animar el orden de visita nodo por nodo:</p>
+                <div class="traversal-grid">
+                    <button type="button" class="btn btn-traversal" data-recorrido="preorden">
+                        <span class="t-title">Pre-Orden</span>
+                        <span class="t-sub">Raíz → Izq → Der</span>
+                    </button>
+                    <button type="button" class="btn btn-traversal" data-recorrido="inorden">
+                        <span class="t-title">In-Orden</span>
+                        <span class="t-sub">Izq → Raíz → Der (Ordenado)</span>
+                    </button>
+                    <button type="button" class="btn btn-traversal" data-recorrido="postorden">
+                        <span class="t-title">Post-Orden</span>
+                        <span class="t-sub">Izq → Der → Raíz (Pirámide)</span>
+                    </button>
+                    <button type="button" class="btn btn-traversal" data-recorrido="niveles">
+                        <span class="t-title">Por Niveles (BFS)</span>
+                        <span class="t-sub">Nivel 1 → Nivel 2 → Nivel 3</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: BÚSQUEDA DEL MÍNIMO Y MÉTRICAS -->
+            <section class="control-card">
+                <h2>3. Búsqueda y Propiedades</h2>
+                <button id="btn-minimo" type="button" class="btn btn-accent btn-full">
+                    🔍 Buscar Valor Mínimo Paso a Paso
+                </button>
+
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <span class="m-label">Total Nodos</span>
+                        <span id="metrica-nodos" class="m-value">0</span>
+                    </div>
+                    <div class="metric-box">
+                        <span class="m-label">Altura Máx.</span>
+                        <span id="metrica-altura" class="m-value">0</span>
+                    </div>
+                    <div class="metric-box">
+                        <span class="m-label">Suma (`sumar_nodos`)</span>
+                        <span id="metrica-suma" class="m-value">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: CÓDIGO PYTHON EN VIVO -->
+            <section class="control-card code-card">
+                <div class="code-header">
+                    <h2>🐍 Código Python en Ejecución</h2>
+                    <span id="codigo-etiqueta" class="code-tag">insertar()</span>
+                </div>
+                <pre id="codigo-python" class="python-code"></pre>
+            </section>
+        </aside>
+
+        <!-- ZONA CENTRAL Y DERECHA: LIENZO GRÁFICO (60% Dominante) -->
+        <section class="canvas-workspace">
+            <!-- BARRA DE EXPLICACIÓN PASO A PASO Y CONTROLES DE REPRODUCCIÓN -->
+            <div class="stepper-bar">
+                <div class="step-explanation">
+                    <span id="step-badge" class="step-badge">Listo</span>
+                    <p id="step-message">Haz clic en insertar un número o elige un recorrido para ver la animación paso a paso.</p>
+                </div>
+
+                <div class="player-controls">
+                    <button id="btn-prev" type="button" class="btn-icon" title="Paso anterior" disabled>⏮</button>
+                    <button id="btn-play-pause" type="button" class="btn-icon btn-play" title="Reproducir / Pausar" disabled>▶</button>
+                    <button id="btn-next" type="button" class="btn-icon" title="Paso siguiente" disabled>⏭</button>
+                    <div class="speed-control">
+                        <label for="select-speed">Velocidad:</label>
+                        <select id="select-speed">
+                            <option value="1300">Lenta (Explicativa)</option>
+                            <option value="800" selected>Normal</option>
+                            <option value="400">Rápida</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIENZO SVG DEL ÁRBOL BINARIO -->
+            <div class="tree-canvas-container">
+                <div class="canvas-legend">
+                    <span class="legend-item"><i class="dot dot-normal"></i> Nodo en Árbol</span>
+                    <span class="legend-item"><i class="dot dot-exploring"></i> Evaluando / Comparando</span>
+                    <span class="legend-item"><i class="dot dot-visited"></i> Visitado / Confirmado</span>
+                </div>
+
+                <svg id="tree-svg" viewBox="0 0 900 460" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <filter id="node-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#1b6b4a" flood-opacity="0.18" />
+                        </filter>
+                    </defs>
+                    <g id="svg-levels"></g>
+                    <g id="svg-edges"></g>
+                    <g id="svg-nodes"></g>
+                </svg>
+            </div>
+
+            <!-- PANEL INFERIOR: RESULTADO DEL RECORRIDO PASO A PASO -->
+            <div class="traversal-output-bar">
+                <div class="output-header">
+                    <h3>📋 Resultado del Recorrido / Secuencia de Visita:</h3>
+                    <span id="step-counter" class="step-counter">Paso 0 / 0</span>
+                </div>
+                <div id="output-sequence" class="sequence-chips">
+                    <span class="empty-sequence">Aún no se ha ejecutado ningún recorrido.</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
